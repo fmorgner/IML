@@ -2,6 +2,8 @@ module Syntax where
 
 import Data.Maybe
 
+newtype IMLIdentifier = Identifier String
+
 data IMLArithmeticOperator
   = Times
   | DivideBy
@@ -40,8 +42,6 @@ data IMLConditional
 data IMLLoop
   = While IMLBooleanExpression IMLCommand
   | For IMLIdentifier IMLArithmeticExpression IMLArithmeticExpression IMLCommand
-
-newtype IMLIdentifier = Identifier String
 
 data IMLExpression
   = BooleanExpression IMLBooleanExpression
