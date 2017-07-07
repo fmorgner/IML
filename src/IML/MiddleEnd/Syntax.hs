@@ -1,4 +1,4 @@
-module Syntax where
+module IML.MiddleEnd.Syntax where
 
 import Data.Maybe
 

@@ -1,4 +1,4 @@
-module Tokens where
+module IML.FrontEnd.Tokens where
 
 import MiddleEnd.Syntax
 import Data.Maybe

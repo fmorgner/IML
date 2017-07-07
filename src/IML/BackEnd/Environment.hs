@@ -1,4 +1,4 @@
-module Environment where
+module IML.BackEnd.Environment where
 
 import Control.Applicative
 import Control.Monad
