@@ -1,6 +1,6 @@
 module IML.FrontEnd.Tokens where
 
-import MiddleEnd.Syntax
+import IML.MiddleEnd.Syntax
 import Data.Maybe
 
 data Token = Token {getTerminal  :: Terminal,
