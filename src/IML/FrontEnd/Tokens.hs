@@ -3,8 +3,7 @@ module IML.FrontEnd.Tokens where
 import IML.MiddleEnd.Syntax
 import Data.Maybe
 
-data Token = Token {getTerminal  :: Terminal,
-                    getAttribute :: Maybe Attribute}
+data Token = Token Terminal (Maybe Attribute)
 
 data Terminal
   = NUMERIC
@@ -32,7 +31,7 @@ data Attribute
   = ArithmeticValue Integer
   | BooleanValue Bool
   | Name String
-  | ArithmeticOperator {getOperator :: IMLArithmeticOperator}
-  | BooleanOperator {getOperator :: IMLBooleanOperator}
-  | RelationalOperator {getOperator :: IMLRelationalOperator}
+  | ArithmeticOperator IMLArithmeticOperator
+  | BooleanOperator IMLBooleanOperator
+  | RelationalOperator IMLRelationalOperator
   deriving (Eq, Show)
