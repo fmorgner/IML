@@ -4,6 +4,7 @@ import IML.MiddleEnd.Syntax
 import Data.Maybe
 
 data Token = Token Terminal (Maybe Attribute)
+  deriving (Eq, Show)
 
 data Terminal
   = NUMERIC
@@ -30,6 +31,7 @@ data Terminal
 data Attribute
   = ArithmeticValue Integer
   | BooleanValue Bool
+  | StringValue String
   | Name String
   | ArithmeticOperator IMLArithmeticOperator
   | BooleanOperator IMLBooleanOperator
