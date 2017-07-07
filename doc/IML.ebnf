@@ -1,0 +1,71 @@
+program                    = compound_command ;
+
+compound_command           = command { command } ;
+
+command                    = assignment_command
+                           | conditional_command
+                           | loop_command
+                           | noop_command ;
+
+noop_command               = "noop"
+                           | string_literal ;
+
+assignment_command         = simple_assignment
+                           | multi_assignment ;
+
+simple_assignment          = identifier "<-" expression ;
+
+multi_assignment           = identifier_sequence "<-" expression_sequence ;
+
+loop_command               = "while" boolean_expression "{" compound_command "}"
+                           | "for" identifier "<-" arithmetic_expression "..." arithmetic_expression "{" compound_command "}" ;
+
+conditional_command        = "if" boolean_expression "{" compound_command [ "}" "else" "{" compound_command ] "}" ;
+
+identifier_sequence        = identifier "," identifier { "," identifier } ;
+
+identifier                 = letter , { letter | digit };
+
+letter                     = "a" | "b" | "c" | "d" | "e" | "f" | "g"
+                           | "h" | "i" | "j" | "k" | "l" | "m" | "n"
+                           | "o" | "p" | "q" | "r" | "s" | "t" | "u"
+                           | "v" | "w" | "x" | "y" | "z" | "A" | "B"
+                           | "C" | "D" | "E" | "F" | "G" | "H" | "I"
+                           | "J" | "K" | "L" | "M" | "N" | "O" | "P"
+                           | "Q" | "R" | "S" | "T" | "U" | "V" | "W"
+                           | "X" | "Y" | "Z" ;
+
+digit                      = "0" | "1" | "2" | "3" | "4" | "5" | "6"
+                           | "7" | "8" | "9" ;
+
+expression_sequence        = expression "," expression { "," expression } ;
+
+expression                 = boolean_expression
+                           | arithmetic_expression
+                           | literal_expression ;
+
+literal_expression         = numeric_literal
+                           | boolean_literal
+                           | string_literal ;
+
+numeric_literal            = { "-" } , digit , { digit } ;
+
+boolean_literal            = "true"
+                           | "false" ;
+
+string_literal             = "'" digit | letter , { digit | letter } "'" ;
+
+boolean_expression         = "!" boolean_expression
+                           | "(" boolean_expression binary_boolean_operator boolean_expression ")"
+                           | "(" arithmetic_expression relational_operator arithmetic_expression ")"
+                           | boolean_literal ;
+
+arithmetic_expression      = numeric_literal
+                           | identifier
+                           | "(" arithmetic_expression binary_arithmetic_operator arithmetic_expression ")" ;
+
+binary_boolean_operator    = "^" | "v" ;
+
+relational_operator        = "<" | "<=" | ">" | ">=" | "=" | "/=" ;
+
+binary_arithmetic_operator = "+" | "-" | "*" | "/" | "%" ;
