@@ -1,0 +1,36 @@
+name:                IML
+version:             0.1.0.0
+synopsis:            An IML interpreter
+description:         A simple hand-written interpreter for the IML language
+homepage:            https://github.com/fmorgner/IML
+license:             BSD3
+license-file:        LICENSE
+author:              Felix Morgner
+maintainer:          felix.morgner@gmail.com
+category:            Development
+build-type:          Simple
+cabal-version:       >=1.10
+
+library
+  hs-source-dir:   lib
+  exposed-modules:
+    IML
+    IML.FrontEnd.Lexer
+    IML.FrontEnd.Tokens
+    IML.MiddleEnd.Syntax
+  build-depends:   base >=4.9 && <4.10
+  default-language: Haskell2010
+
+executable imli
+  hs-source-dirs:   cmd
+  main-is:          Main.hs
+  other-modules:
+    IML.Commandline.Main
+  build-depends:
+      base >=4.9 && <4.10
+    , IML
+  default-language: Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/fmorgner/IML.git

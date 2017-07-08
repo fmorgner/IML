@@ -1,4 +1,6 @@
-import IML.FrontEnd.Lexer
+module IML.Commandline.Main where
+
+import IML
 
 example = ["quo <- 0",
            "rem <- 42",
