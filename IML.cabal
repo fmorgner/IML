@@ -21,6 +21,8 @@ library
     IML.MiddleEnd.Syntax
     IML.MiddleEnd.Parser
     IML.MiddleEnd.Productions
+  other-modules:
+    IML.MiddleEnd.ProductionHelpers
   build-depends:   base >=4.9 && <4.10
   default-language: Haskell2010
 
