@@ -18,6 +18,7 @@ library
     IML
     IML.FrontEnd.Lexer
     IML.FrontEnd.Tokens
+    IML.MiddleEnd
     IML.MiddleEnd.Syntax
     IML.MiddleEnd.Parser
     IML.MiddleEnd.Productions
