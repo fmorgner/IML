@@ -14,10 +14,8 @@ instance Functor Parser where
   fmap f = (>>= return . f)
 
 instance Applicative Parser where
-  lhs <*> rhs = Parser (\ts -> case runParser lhs ts of
-                          Nothing -> Nothing
-                          Just(f, toks) -> runParser (f `fmap` rhs) toks)
   pure x      = Parser (\ts -> Just (x, ts))
+  lhs <*> rhs = lhs >>= \f -> f `fmap` rhs
 
 instance Monad Parser where
   fail _  = Parser $ const Nothing
@@ -27,11 +25,10 @@ instance Monad Parser where
 
 instance Monoid a => Monoid (Parser a) where
   mempty            = return mempty
-  lhs `mappend` rhs = Parser (\ts -> case runParser lhs ts of
-                                       Nothing -> Nothing
-                                       Just(x, toks) -> case runParser rhs toks of
-                                                          Nothing -> Nothing
-                                                          Just(y, toks) -> Just(x `mappend` y, toks))
+  lhs `mappend` rhs = do
+    x <- lhs
+    y <- rhs
+    return $ x `mappend` y
 
 instance Alternative Parser where
   empty = Parser $ const Nothing
