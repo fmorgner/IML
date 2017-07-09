@@ -20,6 +20,7 @@ library
     IML.FrontEnd.Tokens
     IML.MiddleEnd.Syntax
     IML.MiddleEnd.Parser
+    IML.MiddleEnd.Productions
   build-depends:   base >=4.9 && <4.10
   default-language: Haskell2010
 
