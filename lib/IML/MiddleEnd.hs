@@ -5,7 +5,7 @@ Copyright   : (c) Felix Morgner, 2017
 License     : 3-clause BSD
 Maintainer  : felis.morgner@gmail.com
 
-This module contains functions types of the IML interpreter middle-end. The
+This module contains functions and types of the IML interpreter middle-end. The
 middle-end is responsible for parsing and generating the AST.
 -}
 module IML.MiddleEnd (

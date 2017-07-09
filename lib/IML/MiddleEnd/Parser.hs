@@ -1,5 +1,15 @@
 {-# LANGUAGE LambdaCase #-}
 
+{-|
+Module      : IML.MiddleEnd.Parser
+Description : The IML parser type
+Copyright   : (c) Felix Morgner, 2017
+License     : 3-clause BSD
+Maintainer  : felis.morgner@gmail.com
+
+This module contains the IML parser type and its instances.
+-}
+
 module IML.MiddleEnd.Parser where
 
 import Control.Monad
@@ -8,7 +18,15 @@ import Data.Monoid
 import Data.Maybe
 import IML.FrontEnd.Tokens
 
-newtype Parser a = Parser { runParser :: [Token] -> Maybe (a, [Token]) }
+newtype Parser a =
+  Parser {
+{-|
+Run the given 'Parser' on a list of tokens. If the parse succeedes, this
+function returns a tuple consisting of the parse result and the a list of
+remaining tokens. If the parse fails, 'Nothing' is returned.
+-}
+            runParser :: [Token] -> Maybe (a, [Token])
+         }
 
 instance Functor Parser where
   fmap f = (>>= return . f)
@@ -41,6 +59,11 @@ instance Alternative Parser where
                                  Nothing -> runParser rhs ts
                                  x -> x)
 
+{-|
+Combine two parsers into a new parser, that executes the left-hand one followed
+by the right-hand one. The result of the right-hand parser is ignored, while the
+result of the left-hand one is returned.
+-}
 infixl 1 <<
 (<<) :: Parser a -> Parser b -> Parser a
 lhs << rhs = do
@@ -48,6 +71,10 @@ lhs << rhs = do
   rhs
   return res
 
+{-|
+Attach a predicate to a parser. If the parsed token does __not__ fulfill the
+predicate, the parser fails. Otherwise the parsed token is returned.
+-}
 infix 1 ?=?
 (?=?) :: (Token -> Bool) -> Parser Token
 (?=?) pred = do
