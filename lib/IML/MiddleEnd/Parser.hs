@@ -14,10 +14,10 @@ instance Functor Parser where
   fmap f = (>>= return . f)
 
 instance Applicative Parser where
-  pure x      = Parser (\_ -> Just (x, []))
   lhs <*> rhs = Parser (\ts -> case runParser lhs ts of
                           Nothing -> Nothing
                           Just(f, toks) -> runParser (f `fmap` rhs) toks)
+  pure x      = Parser (\ts -> Just (x, ts))
 
 instance Monad Parser where
   fail _  = Parser $ const Nothing
