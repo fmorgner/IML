@@ -4,12 +4,18 @@ import IML.FrontEnd.Tokens
 import IML.MiddleEnd.Parser
 import IML.MiddleEnd.Syntax
 import Control.Monad
+import Control.Applicative
 
 expect :: Terminal -> Parser Token
 expect term = (?=?) $ \(Token term' _) -> term' == term
 
 consume :: Terminal -> Parser ()
 consume ct = void $ expect ct
+
+{- Literals -}
+
+literalExpression :: Parser IMLLiteralExpression
+literalExpression = numericLiteral <|> booleanLiteral <|> stringLiteral
 
 numericLiteral :: Parser IMLLiteralExpression
 numericLiteral = do
