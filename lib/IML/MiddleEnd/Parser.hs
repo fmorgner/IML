@@ -1,6 +1,4 @@
-module IML.MiddleEnd.Parser
-  (Parser
-  ) where
+module IML.MiddleEnd.Parser where
 
 import Control.Monad
 import Control.Applicative
@@ -40,3 +38,10 @@ instance Alternative Parser where
   lhs <|> rhs = Parser (\ts -> case runParser lhs ts of
                                  Nothing -> runParser rhs ts
                                  x -> x)
+
+infixl 1 <<
+(<<) :: Parser a -> Parser b -> Parser a
+lhs << rhs = do
+  res <- lhs
+  rhs
+  return res
