@@ -71,5 +71,5 @@ data IMLArithmeticExpression
 data IMLLiteralExpression
   = NumericLiteral Integer
   | BooleanLiteral Bool
-  | StringLitreal String
+  | StringLiteral String
   deriving (Eq, Show)
