@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 module IML.MiddleEnd.Parser where
 
 import Control.Monad
@@ -45,3 +47,13 @@ lhs << rhs = do
   res <- lhs
   rhs
   return res
+
+infix 1 ?=?
+(?=?) :: (Token -> Bool) -> Parser Token
+(?=?) pred = do
+  res <- Parser $ \case
+                   [] -> Nothing
+                   (t:ts) -> Just (t, ts)
+  if pred res
+     then return res
+     else Parser $ const Nothing
