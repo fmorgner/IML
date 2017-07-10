@@ -37,9 +37,9 @@ Literals
 The __literal_expression__ production:
 
 @
-__literal_expression__ = numeric_literal
-                   | boolean_literal
-                   | string_literal ;
+__literal_expression__ = __numeric_literal__
+                   | __boolean_literal__
+                   | __string_literal__ ;
 @
 -}
 literalExpression :: Parser IMLLiteralExpression
@@ -51,9 +51,9 @@ literalExpression =  numericLiteral
 The __numeric_literal__ production:
 
 @
-__numeric_literal__ = { "-" } , digit , { digit } ;
-__digit__           = "0" | "1" | "2" | "3" | "4" | "5" | "6"
-                | "7" | "8" | "9" ;
+__numeric_literal__ = [ - ] , __digit__ , { __digit__ } ;
+
+__digit__           = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 ;
 @
 -}
 numericLiteral :: Parser IMLLiteralExpression
@@ -65,8 +65,8 @@ numericLiteral = do
 The __boolean_literal__ production:
 
 @
-__boolean_literal__ = "true"
-                | "false" ;
+__boolean_literal__ = true
+                | false ;
 @
 -}
 booleanLiteral :: Parser IMLLiteralExpression
@@ -78,17 +78,12 @@ booleanLiteral = do
 The __string_literal__ production:
 
 @
-__string_literal__ = "'" digit | letter , { digit | letter } "'" ;
-__digit__          = "0" | "1" | "2" | "3" | "4" | "5" | "6"
-               | "7" | "8" | "9" ;
-__letter__         = "a" | "b" | "c" | "d" | "e" | "f" | "g"
-               | "h" | "i" | "j" | "k" | "l" | "m" | "n"
-               | "o" | "p" | "q" | "r" | "s" | "t" | "u"
-               | "v" | "w" | "x" | "y" | "z" | \"A\" | \"B\"
-               | \"C\" | \"D\" | \"E\" | \"F\" | \"G\" | \"H\" | \"I\"
-               | \"J\" | \"K\" | \"L\" | \"M\" | \"N\" | \"O\" | \"P\"
-               | \"Q\" | \"R\" | \"S\" | \"T\" | \"U\" | \"V\" | \"W\"
-               | \"X\" | \"Y\" | \"Z\" ;
+__string_literal__ = ' { __digit__ | __letter__ } ' ;
+
+__letter__         = a | b | c | d | e | f | g | h | i | j | k | l | m | n
+               | o | p | q | r | s | t | u | v | w | x | y | z | A | B
+               | C | D | E | F | G | H | I | J | K | L | M | N | O | P
+               | Q | R | S | T | U | V | W | X | Y | Z ;
 @
 -}
 stringLiteral :: Parser IMLLiteralExpression
@@ -104,7 +99,7 @@ Operators
 The __binary_arithmetic_operator__ production:
 
 @
-__binary_arithmetic_operator__ = "+" | "-" | "*" | "/" | "%" ;
+__binary_arithmetic_operator__ = + | - | * | / | % ;
 @
 -}
 binaryArithmeticOperator :: Parser IMLArithmeticOperator
@@ -147,7 +142,7 @@ Identifiers
 The __identifier__ production:
 
 @
-__identifier__ = letter , { letter | digit };
+__identifier__ = __letter__ , { __letter__ | __digit__ };
 @
 -}
 identifier :: Parser IMLIdentifier
