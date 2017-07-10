@@ -16,6 +16,8 @@ module IML.MiddleEnd.Productions
   stringLiteral,
   -- * Arithmetic Operators
   binaryArithmeticOperator,
+  -- * Identifiers
+  identifier
   ) where
 
 import IML.FrontEnd.Tokens
@@ -109,3 +111,19 @@ binaryArithmeticOperator =  arithOp Times
                         <|> arithOp Modulo
                         <|> arithOp Plus
                         <|> arithOp Minus
+
+{----------
+Identifiers
+-----------}
+
+{-|
+The __identifier__ production:
+
+@
+__identifier__ = letter , { letter | digit };
+@
+-}
+identifier :: Parser IMLIdentifier
+identifier = do
+  (Token IDENTIFIER (Just (Name n))) <- expect IDENTIFIER
+  return (Identifier n)
