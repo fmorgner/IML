@@ -26,13 +26,22 @@ on success.
 arithOp :: IMLArithmeticOperator -> Parser IMLArithmeticOperator
 arithOp op = do
   (Token ARITHMETICOPERATOR (Just (ArithmeticOperator op))) <- expect ARITHMETICOPERATOR
-  return Plus
+  return op
 
 {-|
 Build a parser that expects the given 'IMLBooleanOperator' and returns it
 on success.
 -}
-boolOp :: IMLArithmeticOperator -> Parser IMLArithmeticOperator
+boolOp :: IMLBooleanOperator -> Parser IMLBooleanOperator
 boolOp op = do
   (Token BOOLEANOPERATOR (Just (BooleanOperator op))) <- expect BOOLEANOPERATOR
-  return Plus
+  return op
+
+{-|
+Build a parser that expects the given 'IMLRelationalOperator' and returns it
+on success.
+-}
+relaOp :: IMLRelationalOperator -> Parser IMLRelationalOperator
+relaOp op = do
+  (Token RELATIONALOPERATOR (Just (RelationalOperator op))) <- expect RELATIONALOPERATOR
+  return op

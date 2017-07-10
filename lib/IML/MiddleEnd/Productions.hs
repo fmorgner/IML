@@ -14,8 +14,10 @@ module IML.MiddleEnd.Productions
   numericLiteral,
   booleanLiteral,
   stringLiteral,
-  -- * Arithmetic Operators
+  -- * Operators
   binaryArithmeticOperator,
+  binaryBooleanOperator,
+  relationalOperator,
   -- * Identifiers
   identifier
   ) where
@@ -94,9 +96,9 @@ stringLiteral = do
   (Token STRING (Just (StringValue s))) <- expect STRING
   return (StringLiteral s)
 
-{-------------------
-Arithmetic operators
---------------------}
+{--------
+Operators
+---------}
 
 {-|
 The __binary_arithmetic_operator__ production:
@@ -112,6 +114,31 @@ binaryArithmeticOperator =  arithOp Times
                         <|> arithOp Plus
                         <|> arithOp Minus
 
+{-|
+The __relational_operator__ production:
+
+@
+__relational_operator__ = \< \| \<\= \| > | >= | = | /= ;
+@
+-}
+relationalOperator :: Parser IMLRelationalOperator
+relationalOperator =  relaOp LessThan
+                  <|> relaOp LessThanOrEqual
+                  <|> relaOp GreaterThan
+                  <|> relaOp GreaterThanOrEqual
+                  <|> relaOp Equal
+                  <|> relaOp NotEqual
+
+{-|
+The __binary_boolean_operator__ production:
+
+@
+__binary_boolean_operator__ = ^ | v ;
+@
+-}
+binaryBooleanOperator :: Parser IMLBooleanOperator
+binaryBooleanOperator =  boolOp And
+                     <|> boolOp Or
 {----------
 Identifiers
 -----------}
