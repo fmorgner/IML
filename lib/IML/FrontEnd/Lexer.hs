@@ -39,6 +39,7 @@ tokenize' ('>' : '=' :       rest, toks) = tokenize' (rest, relaOp GreaterThanOr
 tokenize' ('>' :             rest, toks) = tokenize' (rest, relaOp GreaterThan : toks)
 tokenize' ('=' :             rest, toks) = tokenize' (rest, relaOp Equal : toks)
 tokenize' ('/' : '=' :       rest, toks) = tokenize' (rest, relaOp NotEqual : toks)
+tokenize' ('!' :             rest, toks) = tokenize' (rest, Token NOT Nothing : toks)
 tokenize' ('^' :             rest, toks) = tokenize' (rest, Token BOOLEANOPERATOR (Just (BooleanOperator And)) : toks)
 tokenize' ('v' : ' ' :       rest, toks) = tokenize' (rest, Token BOOLEANOPERATOR (Just (BooleanOperator Or)) : toks)
 tokenize' ('(' :             rest, toks) = tokenize' (rest, Token LEFTPAREN Nothing : toks)

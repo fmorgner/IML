@@ -19,7 +19,10 @@ module IML.MiddleEnd.Productions
   binaryBooleanOperator,
   relationalOperator,
   -- * Identifiers
-  identifier
+  identifier,
+  -- * Expressions
+  arithmeticExpression,
+  booleanExpression
   ) where
 
 import IML.FrontEnd.Tokens
@@ -149,3 +152,50 @@ identifier :: Parser IMLIdentifier
 identifier = do
   (Token IDENTIFIER (Just (Name n))) <- expect IDENTIFIER
   return (Identifier n)
+
+{----------
+Expressions
+-----------}
+
+{-|
+The __arithmetic_expression__ production:
+
+@
+__arithmetic_expression__ = __numeric_literal__
+                      | __identifier__
+                      | "(" __arithmetic_expression__ __binary_arithmetic_operator__ __arithmetic_expression__ ")" ;
+@
+-}
+arithmeticExpression :: Parser IMLArithmeticExpression
+arithmeticExpression =  NumericLiteralExpression <$> numericLiteral
+                    <|> ArithmeticIdentifierExpression <$> identifier
+                    <|> do
+                          lhs <- consume LEFTPAREN >> arithmeticExpression
+                          op  <- binaryArithmeticOperator
+                          rhs <- arithmeticExpression << consume RIGHTPAREN
+                          return $ Binary lhs op rhs
+
+{-|
+The __boolean_expression__ production:
+
+@
+__boolean_expression__ = "!" __boolean_expression__
+                   | "(" __boolean_expression__ __binary_boolean_operator__ __boolean_expression__ ")"
+                   | "(" __arithmetic_expression__ __relational_operator__ __arithmetic_expression__ ")"
+                   | __boolean_literal__ ;
+@
+-}
+booleanExpression :: Parser IMLBooleanExpression
+booleanExpression =  BooleanLiteralExpression <$> booleanLiteral
+                 <|> Negation <$> (consume NOT >> booleanExpression)
+                 <|> BooleanIdentifierExpression <$> identifier
+                 <|> do
+                       lhs <- consume LEFTPAREN >> booleanExpression
+                       op <- binaryBooleanOperator
+                       rhs <- booleanExpression << consume RIGHTPAREN
+                       return $ Comparison lhs op rhs
+                 <|> do
+                       lhs <- consume LEFTPAREN >> arithmeticExpression
+                       op <- relationalOperator
+                       rhs <- arithmeticExpression << consume RIGHTPAREN
+                       return $ Relation lhs op rhs

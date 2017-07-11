@@ -61,11 +61,13 @@ data IMLBooleanExpression
   | Comparison IMLBooleanExpression IMLBooleanOperator IMLBooleanExpression
   | Relation IMLArithmeticExpression IMLRelationalOperator IMLArithmeticExpression
   | BooleanLiteralExpression IMLLiteralExpression
+  | BooleanIdentifierExpression IMLIdentifier
   deriving (Eq, Show)
 
 data IMLArithmeticExpression
   = Binary IMLArithmeticExpression IMLArithmeticOperator IMLArithmeticExpression
   | NumericLiteralExpression IMLLiteralExpression
+  | ArithmeticIdentifierExpression IMLIdentifier
   deriving (Eq, Show)
 
 data IMLLiteralExpression

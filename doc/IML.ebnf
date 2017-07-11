@@ -58,7 +58,8 @@ string_literal             = "'" digit | letter , { digit | letter } "'" ;
 boolean_expression         = "!" boolean_expression
                            | "(" boolean_expression binary_boolean_operator boolean_expression ")"
                            | "(" arithmetic_expression relational_operator arithmetic_expression ")"
-                           | boolean_literal ;
+                           | boolean_literal
+                           | identifer ;
 
 arithmetic_expression      = numeric_literal
                            | identifier

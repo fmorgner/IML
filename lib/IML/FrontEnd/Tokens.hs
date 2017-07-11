@@ -26,6 +26,7 @@ data Terminal
   | ARITHMETICOPERATOR
   | BOOLEANOPERATOR
   | RELATIONALOPERATOR
+  | NOT
   deriving (Eq, Show)
 
 data Attribute
