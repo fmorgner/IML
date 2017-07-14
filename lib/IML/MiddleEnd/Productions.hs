@@ -55,8 +55,10 @@ module IML.MiddleEnd.Productions
    relationalOperator,
    -- * Identifiers
    identifier,
+   identifierSequence,
    -- * Expressions
    expression,
+   expressionSequence,
    -- ** Arithmetic expressions
    arithmeticOperand,
    additiveExpression,
@@ -212,6 +214,19 @@ identifier = do
   (Token IDENTIFIER (Just (Name n))) <- expect IDENTIFIER
   return (Identifier n)
 
+{-|
+The __identifier_sequence__ production:
+
+@
+__identifier_sequence__ = __identifier__ "," __identifier__ { "," __identifier__ } ;
+@
+-}
+identifierSequence :: Parser [IMLIdentifier]
+identifierSequence = do
+  first <- identifier
+  ids   <- many (consume COMMA >> identifier)
+  return (first : ids)
+
 {----------
 Expressions
 -----------}
@@ -231,6 +246,19 @@ expression =  BooleanExpression <$> booleanExpression
           <|> LiteralExpression <$> (booleanLiteral
                                  <|> numericLiteral
                                  <|> stringLiteral)
+
+{-|
+The __expression_sequence__ production:
+
+@
+__expression_sequence__ = __expression__ "," __expression__ { "," __expression__ } ;
+@
+-}
+expressionSequence :: Parser [IMLExpression]
+expressionSequence = do
+  first <- expression
+  exprs <- many (consume COMMA >> expression)
+  return (first : exprs)
 
 {---------------------
 Expressions.Arithmetic
