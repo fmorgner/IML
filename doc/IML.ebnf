@@ -55,23 +55,27 @@ boolean_literal            = "true"
 
 string_literal             = "'" digit | letter , { digit | letter } "'" ;
 
-boolean_expression         = "!" boolean_expression
-                           | "(" boolean_expression binary_boolean_operator boolean_expression ")"
-                           | "(" arithmetic_expression relational_operator arithmetic_expression ")"
-                           | boolean_literal
-                           | identifer ;
+boolean_operand            = boolean_literal
+                           | identifer
+                           | "(" boolean_expression ")" ;
+
+binary_boolean_operator    = "^" | "v" ;
+
+unary_boolean_operator     = "!" ;
+
+relational_operator        = "<" | "<=" | ">" | ">=" | "=" | "/=" ;
+
+boolean_expression         = boolean_operand { binary_boolean_operator boolean_operand }
+                           | additive_expression relational_operator additive_expression
+                           | unary_boolean_operator boolean_operand ;
 
 arithmetic_operand         = numeric_literal
                            | identifer ;
 
-additive_expression        = multiplicative_expression { additive_operator multiplicative_expression } ;
-
-multiplicative_expression  = arithmetic_operand { multiplicative_operator arithmetic_operand } ;
-
-binary_boolean_operator    = "^" | "v" ;
-
-relational_operator        = "<" | "<=" | ">" | ">=" | "=" | "/=" ;
-
 additive_operator          = "+" | "-" ;
 
 multiplicative_operator    = "*" | "/" | "%" ;
+
+additive_expression        = multiplicative_expression { additive_operator multiplicative_expression } ;
+
+multiplicative_expression  = arithmetic_operand { multiplicative_operator arithmetic_operand } ;

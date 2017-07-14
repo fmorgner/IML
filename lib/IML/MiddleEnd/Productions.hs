@@ -17,6 +17,7 @@ module IML.MiddleEnd.Productions
    -- * Operators
    additiveOperator,
    multiplicativeOperator,
+   unaryBooleanOperator,
    binaryBooleanOperator,
    relationalOperator,
    -- * Identifiers
@@ -26,7 +27,10 @@ module IML.MiddleEnd.Productions
    -- ** Arithmetic expressions
    arithmeticOperand,
    additiveExpression,
-   multiplicativeExpression
+   multiplicativeExpression,
+   -- ** Boolean expressions
+   booleanOperand,
+   booleanExpression
    ) where
 
 import IML.FrontEnd.Tokens
@@ -145,9 +149,20 @@ The __binary_boolean_operator__ production:
 __binary_boolean_operator__ = ^ | v ;
 @
 -}
-binaryBooleanOperator :: Parser IMLBooleanOperator
+binaryBooleanOperator :: Parser IMLBinaryBooleanOperator
 binaryBooleanOperator =  boolOp And
                      <|> boolOp Or
+
+{-|
+The __unary_boolean_operator__ production:
+
+@
+__unary_boolean_operator__ = ! ;
+@
+-}
+unaryBooleanOperator :: Parser IMLUnaryBooleanOperator
+unaryBooleanOperator = expect NOT >> return Not
+
 {----------
 Identifiers
 -----------}
@@ -177,7 +192,9 @@ __expression__ = __boolean_expression__
            | __literal_expression__ ;
 @
 -}
-expression = AdditiveExpression <$> additiveExpression
+expression :: Parser IMLExpression
+expression =  BooleanExpression <$> booleanExpression
+          <|> AdditiveExpression <$> additiveExpression
           <|> LiteralExpression <$> (booleanLiteral
                                  <|> numericLiteral
                                  <|> stringLiteral)
@@ -223,3 +240,45 @@ multiplicativeExpression = do
   lhs <- arithmeticOperand
   terms <- some $ term multiplicativeOperator arithmeticOperand
   return $ Multiplicative lhs terms
+
+{------------------
+Expressions.Boolean
+-------------------}
+
+{-|
+The __boolean_operand__ production:
+
+@
+__boolean_operand__ = __boolean_literal__
+                | __identifer__
+                | "(" __boolean_expression__ ")" ;
+@
+-}
+booleanOperand :: Parser IMLBooleanOperand
+booleanOperand =  BooleanLiteralOperand <$> booleanLiteral
+              <|> BooleanIdentifierOperand <$> identifier
+              <|> BooleanExpressionOperand <$> ((expect LEFTPAREN >> booleanExpression) << expect RIGHTPAREN)
+              <|> do
+                op  <- unaryBooleanOperator
+                rhs <- booleanOperand
+                return $ BooleanExpressionOperand $ BooleanUnary op rhs
+
+{-|
+The __boolean_expression__ production:
+
+@
+__boolean_expression__ = __boolean_operand__ { __binary_boolean_operator__ __boolean_operand__ }
+                   | __additive_expression __relational_operator__ __additive_expression__
+                   | __unary_boolean_operator __boolean_operand__ ;
+@
+-}
+booleanExpression :: Parser IMLBooleanExpression
+booleanExpression =  do
+                    lhs <- additiveExpression
+                    op  <- relationalOperator
+                    rhs <- additiveExpression
+                    return $ Relation lhs op rhs
+                 <|> do
+                    lhs <- booleanOperand
+                    terms <- some $ term binaryBooleanOperator booleanOperand
+                    return $ Combination lhs terms

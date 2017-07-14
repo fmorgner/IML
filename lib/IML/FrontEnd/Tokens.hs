@@ -36,6 +36,6 @@ data Attribute
   | Name String
   | AdditiveOperator IMLAdditiveOperator
   | MultiplicativeOperator IMLMultiplicativeOperator
-  | BooleanOperator IMLBooleanOperator
+  | BinaryBooleanOperator IMLBinaryBooleanOperator
   | RelationalOperator IMLRelationalOperator
   deriving (Eq, Show)

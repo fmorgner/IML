@@ -41,9 +41,9 @@ multiplicativeOp op = do
 Build a parser that expects the given 'IMLBooleanOperator' and returns it
 on success.
 -}
-boolOp :: IMLBooleanOperator -> Parser IMLBooleanOperator
+boolOp :: IMLBinaryBooleanOperator -> Parser IMLBinaryBooleanOperator
 boolOp op = do
-  (Token BOOLEANOPERATOR (Just (BooleanOperator op))) <- expect BOOLEANOPERATOR
+  (Token BOOLEANOPERATOR (Just (BinaryBooleanOperator op))) <- expect BOOLEANOPERATOR
   return op
 
 {-|
@@ -55,6 +55,7 @@ relaOp op = do
   (Token RELATIONALOPERATOR (Just (RelationalOperator op))) <- expect RELATIONALOPERATOR
   return op
 
+term :: Parser a -> Parser b -> Parser (a, b)
 term operator operand = do
   opr <- operator
   rhs <- operand

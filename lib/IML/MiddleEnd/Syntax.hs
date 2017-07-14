@@ -16,21 +16,6 @@ data IMLMultiplicativeOperator
   | Modulo
   deriving (Eq, Show)
 
-data IMLBooleanOperator
-  = And
-  | Or
-  deriving (Eq, Show)
-
-data IMLRelationalOperator
-  = LessThan
-  | LessThanOrEqual
-  | GreaterThan
-  | GreaterThanOrEqual
-  | Equal
-  | NotEqual
-  | Literal IMLLiteralExpression
-  deriving (Eq, Show)
-
 data IMLCommand
   = Assignment IMLAssignment
   | Conditional IMLConditional
@@ -59,12 +44,35 @@ data IMLExpression
   | LiteralExpression IMLLiteralExpression
   deriving (Eq, Show)
 
+data IMLBooleanOperand
+  = BooleanLiteralOperand IMLLiteralExpression
+  | BooleanIdentifierOperand IMLIdentifier
+  | BooleanExpressionOperand IMLBooleanExpression
+  deriving (Eq, Show)
+
+data IMLBinaryBooleanOperator
+  = And
+  | Or
+  deriving (Eq, Show)
+
+data IMLUnaryBooleanOperator
+  = Not
+  deriving (Eq, Show)
+
+data IMLRelationalOperator
+  = LessThan
+  | LessThanOrEqual
+  | GreaterThan
+  | GreaterThanOrEqual
+  | Equal
+  | NotEqual
+  | Literal IMLLiteralExpression
+  deriving (Eq, Show)
+
 data IMLBooleanExpression
-  = Negation IMLBooleanExpression
-  | Comparison IMLBooleanExpression IMLBooleanOperator IMLBooleanExpression
+  = Combination IMLBooleanOperand [(IMLBinaryBooleanOperator, IMLBooleanOperand)]
   | Relation IMLAdditiveExpression IMLRelationalOperator IMLAdditiveExpression
-  | BooleanLiteralExpression IMLLiteralExpression
-  | BooleanIdentifierExpression IMLIdentifier
+  | BooleanUnary IMLUnaryBooleanOperator IMLBooleanOperand
   deriving (Eq, Show)
 
 data IMLArithmeticOperand
