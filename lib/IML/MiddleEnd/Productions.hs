@@ -268,8 +268,8 @@ The __boolean_expression__ production:
 
 @
 __boolean_expression__ = __boolean_operand__ { __binary_boolean_operator__ __boolean_operand__ }
-                   | __additive_expression __relational_operator__ __additive_expression__
-                   | __unary_boolean_operator __boolean_operand__ ;
+                   | __additive_expression__ __relational_operator__ __additive_expression__
+                   | __unary_boolean_operator__ __boolean_operand__ ;
 @
 -}
 booleanExpression :: Parser IMLBooleanExpression
