@@ -95,7 +95,7 @@ tokenizeNumeric (x : xs, toks) = numeric (xs, digitToInt x, toks)
   where numeric ([], num, toks) = ([], Token NUMERIC (Just $ NumericValue $ toInteger num) : toks)
         numeric (x : xs, num, toks)
           | isDigit x = numeric (xs, num * 10 + digitToInt x, toks)
-          | otherwise = (xs, Token NUMERIC (Just $ NumericValue $ toInteger num) : toks)
+          | otherwise = (x : xs, Token NUMERIC (Just $ NumericValue $ toInteger num) : toks)
 
 tokenizeAlpha :: (String, [Token]) -> (String, [Token])
 tokenizeAlpha (x : xs, toks) = alpha (xs, [x], toks)
