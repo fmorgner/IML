@@ -30,11 +30,12 @@ data Terminal
   deriving (Eq, Show)
 
 data Attribute
-  = ArithmeticValue Integer
+  = NumericValue Integer
   | BooleanValue Bool
   | StringValue String
   | Name String
-  | ArithmeticOperator IMLArithmeticOperator
+  | AdditiveOperator IMLAdditiveOperator
+  | MultiplicativeOperator IMLMultiplicativeOperator
   | BooleanOperator IMLBooleanOperator
   | RelationalOperator IMLRelationalOperator
   deriving (Eq, Show)

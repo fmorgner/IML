@@ -23,15 +23,16 @@ keywords "while" = Token WHILE Nothing
 keywords "noop"  = Token NOOP Nothing
 keywords x       = Token IDENTIFIER (Just $ Name x)
 
-arithOp op = Token ARITHMETICOPERATOR $ Just $ ArithmeticOperator op
+addOp op = Token ARITHMETICOPERATOR $ Just $ AdditiveOperator op
+mulOp op = Token ARITHMETICOPERATOR $ Just $ MultiplicativeOperator op
 relaOp  op = Token RELATIONALOPERATOR $ Just $ RelationalOperator op
 
 tokenize' :: (String, [Token]) -> [Token]
-tokenize' ('+' :             rest, toks) = tokenize' (rest, arithOp Plus : toks)
-tokenize' ('-' : ' ' :       rest, toks) = tokenize' (rest, arithOp Minus : toks)
-tokenize' ('*' :             rest, toks) = tokenize' (rest, arithOp Times : toks)
-tokenize' ('/' : ' ' :       rest, toks) = tokenize' (rest, arithOp DivideBy : toks)
-tokenize' ('%' :             rest, toks) = tokenize' (rest, arithOp Modulo : toks)
+tokenize' ('+' :             rest, toks) = tokenize' (rest, addOp Plus : toks)
+tokenize' ('-' : ' ' :       rest, toks) = tokenize' (rest, addOp Minus : toks)
+tokenize' ('*' :             rest, toks) = tokenize' (rest, mulOp Times : toks)
+tokenize' ('/' : ' ' :       rest, toks) = tokenize' (rest, mulOp DivideBy : toks)
+tokenize' ('%' :             rest, toks) = tokenize' (rest, mulOp Modulo : toks)
 tokenize' ('<' : '-' :       rest, toks) = tokenize' (rest, Token BECOMES Nothing : toks)
 tokenize' ('<' : '=' :       rest, toks) = tokenize' (rest, relaOp LessThanOrEqual : toks)
 tokenize' ('<' :             rest, toks) = tokenize' (rest, relaOp LessThan : toks)
@@ -58,10 +59,10 @@ tokenize' ([], toks) = reverse toks
 
 tokenizeNumeric :: (String, [Token]) -> (String, [Token])
 tokenizeNumeric (x : xs, toks) = numeric (xs, digitToInt x, toks)
-  where numeric ([], num, toks) = ([], Token NUMERIC (Just $ ArithmeticValue $ toInteger num) : toks)
+  where numeric ([], num, toks) = ([], Token NUMERIC (Just $ NumericValue $ toInteger num) : toks)
         numeric (x : xs, num, toks)
           | isDigit x = numeric (xs, num * 10 + digitToInt x, toks)
-          | otherwise = (xs, Token NUMERIC (Just $ ArithmeticValue $ toInteger num) : toks)
+          | otherwise = (xs, Token NUMERIC (Just $ NumericValue $ toInteger num) : toks)
 
 tokenizeAlpha :: (String, [Token]) -> (String, [Token])
 tokenizeAlpha (x : xs, toks) = alpha (xs, [x], toks)

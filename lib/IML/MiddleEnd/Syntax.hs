@@ -5,12 +5,15 @@ import Data.Maybe
 newtype IMLIdentifier = Identifier String
   deriving (Eq, Show)
 
-data IMLArithmeticOperator
+data IMLAdditiveOperator
+  = Plus
+  | Minus
+  deriving (Eq, Show)
+
+data IMLMultiplicativeOperator
   = Times
   | DivideBy
   | Modulo
-  | Plus
-  | Minus
   deriving (Eq, Show)
 
 data IMLBooleanOperator
@@ -47,27 +50,34 @@ data IMLConditional
 
 data IMLLoop
   = While IMLBooleanExpression IMLCommand
-  | For IMLIdentifier IMLArithmeticExpression IMLArithmeticExpression IMLCommand
+  | For IMLIdentifier IMLAdditiveExpression IMLAdditiveExpression IMLCommand
   deriving (Eq, Show)
 
 data IMLExpression
   = BooleanExpression IMLBooleanExpression
-  | ArithmeticExpression IMLArithmeticExpression
+  | AdditiveExpression IMLAdditiveExpression
   | LiteralExpression IMLLiteralExpression
   deriving (Eq, Show)
 
 data IMLBooleanExpression
   = Negation IMLBooleanExpression
   | Comparison IMLBooleanExpression IMLBooleanOperator IMLBooleanExpression
-  | Relation IMLArithmeticExpression IMLRelationalOperator IMLArithmeticExpression
+  | Relation IMLAdditiveExpression IMLRelationalOperator IMLAdditiveExpression
   | BooleanLiteralExpression IMLLiteralExpression
   | BooleanIdentifierExpression IMLIdentifier
   deriving (Eq, Show)
 
-data IMLArithmeticExpression
-  = Binary IMLArithmeticExpression IMLArithmeticOperator IMLArithmeticExpression
-  | NumericLiteralExpression IMLLiteralExpression
-  | ArithmeticIdentifierExpression IMLIdentifier
+data IMLArithmeticOperand
+  = NumericOperand IMLLiteralExpression
+  | IdentifierOperand IMLIdentifier
+  deriving (Eq, Show)
+
+data IMLAdditiveExpression
+  = Additive IMLMultiplicativeExpression [(IMLAdditiveOperator, IMLMultiplicativeExpression)]
+  deriving (Eq, Show)
+
+data IMLMultiplicativeExpression
+  = Multiplicative IMLArithmeticOperand [(IMLMultiplicativeOperator, IMLArithmeticOperand)]
   deriving (Eq, Show)
 
 data IMLLiteralExpression

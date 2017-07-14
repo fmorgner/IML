@@ -8,22 +8,26 @@ Maintainer  : felis.morgner@gmail.com
 This module contains functions representing the production rules for IML.
 -}
 module IML.MiddleEnd.Productions
-  (
-  -- * Literals
-  literalExpression,
-  numericLiteral,
-  booleanLiteral,
-  stringLiteral,
-  -- * Operators
-  binaryArithmeticOperator,
-  binaryBooleanOperator,
-  relationalOperator,
-  -- * Identifiers
-  identifier,
-  -- * Expressions
-  arithmeticExpression,
-  booleanExpression
-  ) where
+   (
+   -- * Literals
+   literalExpression,
+   numericLiteral,
+   booleanLiteral,
+   stringLiteral,
+   -- * Operators
+   additiveOperator,
+   multiplicativeOperator,
+   binaryBooleanOperator,
+   relationalOperator,
+   -- * Identifiers
+   identifier,
+   -- * Expressions
+   expression,
+   -- ** Arithmetic expressions
+   arithmeticOperand,
+   additiveExpression,
+   multiplicativeExpression
+   ) where
 
 import IML.FrontEnd.Tokens
 import IML.MiddleEnd.Parser
@@ -61,7 +65,7 @@ __digit__           = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 ;
 -}
 numericLiteral :: Parser IMLLiteralExpression
 numericLiteral = do
-  (Token NUMERIC (Just (ArithmeticValue n))) <- expect NUMERIC
+  (Token NUMERIC (Just (NumericValue n))) <- expect NUMERIC
   return (NumericLiteral n)
 
 {-|
@@ -99,18 +103,25 @@ Operators
 ---------}
 
 {-|
-The __binary_arithmetic_operator__ production:
+The __additive_operator__ production:
 
 @
-__binary_arithmetic_operator__ = + | - | * | / | % ;
+__additive_operator__ = + | - ;
 @
 -}
-binaryArithmeticOperator :: Parser IMLArithmeticOperator
-binaryArithmeticOperator =  arithOp Times
-                        <|> arithOp DivideBy
-                        <|> arithOp Modulo
-                        <|> arithOp Plus
-                        <|> arithOp Minus
+additiveOperator =  additiveOp Plus
+                <|> additiveOp Minus
+
+{-|
+The __additive_operator__ production:
+
+@
+__additive_operator__ = + | - ;
+@
+-}
+multiplicativeOperator =  multiplicativeOp Times
+                      <|> multiplicativeOp DivideBy
+                      <|> multiplicativeOp Modulo
 
 {-|
 The __relational_operator__ production:
@@ -158,44 +169,57 @@ Expressions
 -----------}
 
 {-|
-The __arithmetic_expression__ production:
+The __expression__ production:
 
 @
-__arithmetic_expression__ = __numeric_literal__
-                      | __identifier__
-                      | "(" __arithmetic_expression__ __binary_arithmetic_operator__ __arithmetic_expression__ ")" ;
+__expression__ = __boolean_expression__
+           | __additive_expression__
+           | __literal_expression__ ;
 @
 -}
-arithmeticExpression :: Parser IMLArithmeticExpression
-arithmeticExpression =  NumericLiteralExpression <$> numericLiteral
-                    <|> ArithmeticIdentifierExpression <$> identifier
-                    <|> do
-                          lhs <- consume LEFTPAREN >> arithmeticExpression
-                          op  <- binaryArithmeticOperator
-                          rhs <- arithmeticExpression << consume RIGHTPAREN
-                          return $ Binary lhs op rhs
+expression = AdditiveExpression <$> additiveExpression
+          <|> LiteralExpression <$> (booleanLiteral
+                                 <|> numericLiteral
+                                 <|> stringLiteral)
+
+{---------------------
+Expressions.Arithmetic
+----------------------}
 
 {-|
-The __boolean_expression__ production:
+The __arithmetic_operand__ production:
 
 @
-__boolean_expression__ = "!" __boolean_expression__
-                   | "(" __boolean_expression__ __binary_boolean_operator__ __boolean_expression__ ")"
-                   | "(" __arithmetic_expression__ __relational_operator__ __arithmetic_expression__ ")"
-                   | __boolean_literal__ ;
+__arithmetic_operand__ = __numeric_literal__
+                   | __identifier__
 @
 -}
-booleanExpression :: Parser IMLBooleanExpression
-booleanExpression =  BooleanLiteralExpression <$> booleanLiteral
-                 <|> Negation <$> (consume NOT >> booleanExpression)
-                 <|> BooleanIdentifierExpression <$> identifier
-                 <|> do
-                       lhs <- consume LEFTPAREN >> booleanExpression
-                       op <- binaryBooleanOperator
-                       rhs <- booleanExpression << consume RIGHTPAREN
-                       return $ Comparison lhs op rhs
-                 <|> do
-                       lhs <- consume LEFTPAREN >> arithmeticExpression
-                       op <- relationalOperator
-                       rhs <- arithmeticExpression << consume RIGHTPAREN
-                       return $ Relation lhs op rhs
+arithmeticOperand :: Parser IMLArithmeticOperand
+arithmeticOperand =  NumericOperand <$> numericLiteral
+                 <|> IdentifierOperand <$> identifier
+
+{-|
+The __additive_expression__ production:
+
+@
+__additive_expression__ = __multiplicative_expression__ { __additive_operator__ __multiplicative_expression__ } ;
+@
+-}
+additiveExpression :: Parser IMLAdditiveExpression
+additiveExpression = do
+  lhs <- multiplicativeExpression
+  terms <- some $ term additiveOperator multiplicativeExpression
+  return $ Additive lhs terms
+
+{-|
+The __multiplicative_expression__ production:
+
+@
+__multiplicative_expression__ = __arithmetic_operand__ { __multiplicative_operator__ __arithmetic_operand__ } ;
+@
+-}
+multiplicativeExpression :: Parser IMLMultiplicativeExpression
+multiplicativeExpression = do
+  lhs <- arithmeticOperand
+  terms <- some $ term multiplicativeOperator arithmeticOperand
+  return $ Multiplicative lhs terms

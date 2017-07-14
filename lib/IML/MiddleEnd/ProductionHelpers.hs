@@ -20,12 +20,21 @@ consume :: Terminal -> Parser ()
 consume ct = void $ expect ct
 
 {-|
-Build a parser that expects the given 'IMLArithmeticOperator' and returns it
+Build a parser that expects the given 'IMLAdditiveOperator' and returns it
 on success.
 -}
-arithOp :: IMLArithmeticOperator -> Parser IMLArithmeticOperator
-arithOp op = do
-  (Token ARITHMETICOPERATOR (Just (ArithmeticOperator op))) <- expect ARITHMETICOPERATOR
+additiveOp :: IMLAdditiveOperator -> Parser IMLAdditiveOperator
+additiveOp op = do
+  (Token ARITHMETICOPERATOR (Just (AdditiveOperator op))) <- expect ARITHMETICOPERATOR
+  return op
+
+{-|
+Build a parser that expects the given 'IMLMultiplicativeOperator' and returns it
+on success.
+-}
+multiplicativeOp :: IMLMultiplicativeOperator -> Parser IMLMultiplicativeOperator
+multiplicativeOp op = do
+  (Token ARITHMETICOPERATOR (Just (MultiplicativeOperator op))) <- expect ARITHMETICOPERATOR
   return op
 
 {-|
@@ -45,3 +54,8 @@ relaOp :: IMLRelationalOperator -> Parser IMLRelationalOperator
 relaOp op = do
   (Token RELATIONALOPERATOR (Just (RelationalOperator op))) <- expect RELATIONALOPERATOR
   return op
+
+term operator operand = do
+  opr <- operator
+  rhs <- operand
+  return (opr, rhs)
